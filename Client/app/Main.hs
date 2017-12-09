@@ -14,6 +14,9 @@ main = do
                     putStrLn $ "getting " ++ filePath ++ "...\n"
                     getFile filePath
                     input
+                ["write", file] -> do
+                    newFile file
+                    input
                 ["quit"] -> do
                     putStrLn "Bye!"
                     return ()
