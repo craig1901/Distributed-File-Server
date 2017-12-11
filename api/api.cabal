@@ -15,7 +15,7 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Api.File
+  exposed-modules:     Api.File, Api.Directory
   build-depends:       base >= 4.7 && < 5
                      , aeson
                      , servant-server
@@ -24,6 +24,9 @@ library
                      , servant
                      , warp
                      , http-client
+                     , persistent
+                     , persistent-mysql-haskell
+                     , persistent-template
   default-language:    Haskell2010
 
 executable api-exe

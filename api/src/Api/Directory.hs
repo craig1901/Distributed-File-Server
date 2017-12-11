@@ -14,27 +14,28 @@
 {-# LANGUAGE TypeOperators              #-}
 {-# LANGUAGE TypeFamilies               #-}
 
-module Main where
+module Api.Directory where
 
-import  Control.Monad.IO.Class  (liftIO)
-import  Control.Monad.Logger    (runStderrLoggingT, runStdoutLoggingT, runNoLoggingT)
-import  Database.Persist
-import  Database.Persist.MySQL  (ConnectionPool, MySQLConnectInfo, createMySQLPool, mkMySQLConnectInfo)
-import  Database.Persist.Sql
-import  Database.Persist.TH
-import  Api.Directory as D
+import Data.Aeson
+import Data.Aeson.TH
+import Data.Proxy
+import Network.Wai
+import Network.Wai.Handler.Warp
+import Servant.API
+import Servant.Client
+import Database.Persist
+import Database.Persist.MySQL  (ConnectionPool, MySQLConnectInfo, createMySQLPool, mkMySQLConnectInfo)
+import Database.Persist.Sql
+import Database.Persist.TH
+import Network.HTTP.Client (newManager, defaultManagerSettings)
+import GHC.Generics
+
+share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
+Files
+    name String
+    path String
+    deriving Show
+|]
 
 
-conn :: IO MySQLConnectInfo
-conn = return (mkMySQLConnectInfo "localhost" "root" "root" "Files")
-
-makePool :: IO ConnectionPool
-makePool = do
-    c <- conn
-    runStdoutLoggingT (createMySQLPool c 1)
-
-
-main :: IO ()
-main = do
-    p <- makePool
-    runSqlPool (runMigration migrateAll) p
+type DirectoryApi = Capture "ls" String :> Get '[JSON] [Files]
