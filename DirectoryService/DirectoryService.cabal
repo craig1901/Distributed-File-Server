@@ -42,7 +42,7 @@ executable DirectoryService-exe
       base >= 4.7 && < 5
     , DirectoryService
     , persistent
-    , persistent-mysql
+    , persistent-mysql-haskell
     , persistent-template
     , transformers
     , monad-logger
