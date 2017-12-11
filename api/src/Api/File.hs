@@ -39,7 +39,7 @@ instance FromJSON File
 data FilePost = FilePost
     {
         saved :: Bool
-    }deriving(Generic)
+    }deriving(Show, Generic)
 
 instance ToJSON FilePost
 instance FromJSON FilePost
@@ -56,4 +56,4 @@ query f = do
     result <- runClientM f (ClientEnv manager (BaseUrl Http "localhost" 8080 ""))
     case result of
         Left err -> putStrLn $ "Error: " ++ show err
-        Right res -> print res
+        Right res -> putStrLn $ show res ++"\n"
