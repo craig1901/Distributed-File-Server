@@ -24,7 +24,7 @@ import  Database.Persist.MySQL  (withMySQLPool, ConnectionPool, MySQLConnectInfo
 import  Database.Persist.Sql
 import  Database.Persist.TH
 import  Api.File
-import  Api.Directory
+import  Api.Locking
 
 
 conn :: MySQLConnectInfo
