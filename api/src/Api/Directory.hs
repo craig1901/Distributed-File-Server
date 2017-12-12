@@ -48,10 +48,6 @@ ls :: ClientM [Files]
 put' :: File -> ClientM ()
 ls :<|> put' = client directoryApi
 
-query :: Show a => ClientM a -> IO ()
 query f = do
     manager <- newManager defaultManagerSettings
-    result <- runClientM f (ClientEnv manager (BaseUrl Http "localhost" 5000 ""))
-    case result of
-        Left err -> putStrLn $ "Error: " ++ show err
-        Right res -> putStrLn $ show res ++"\n"
+    runClientM f (ClientEnv manager (BaseUrl Http "localhost" 5000 ""))

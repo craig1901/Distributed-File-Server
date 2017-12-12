@@ -20,6 +20,7 @@ library
                      , api
                      , aeson
                      , editor-open
+                     , bytestring
                      , servant-server
                      , wai
                      , warp
@@ -42,6 +43,7 @@ test-suite Client-test
                      , hspec
                      , hspec-wai
                      , hspec-wai-json
+                     , bytestring
                      , aeson
                      , filepath
                      , directory

@@ -48,6 +48,19 @@ api = Proxy
 server :: Server FileApi
 server = getFile
     :<|> putFile
+    :<|> updateFile
+
+updateFile :: File -> Handler FilePost
+updateFile f = do
+    let path = fileName f
+    exists <- liftIO $ doesFileExist path
+    if exists
+        then do
+            liftIO $ print "Writing to file..."
+            liftIO $ writeFile path (fileContents f)
+            return $ FilePost True
+        else throwError noFileExists
+
 
 getFile :: String -> Handler File
 getFile f = do
@@ -56,7 +69,6 @@ getFile f = do
     if exists
         then do
             contents <- liftIO $ readFile path
-            liftIO $ putStr contents
             return $ File path contents
         else throwError noFileExists
 
@@ -71,8 +83,6 @@ putFile f = do
             dirExists <- liftIO $ doesDirectoryExist ("files/" ++ dir)
             if not dirExists && ( dir /= ".")
                 then do
-                    liftIO $ print $ fileName f
-                    liftIO $ print $ takeDirectory (fileName f)
                     liftIO $ createDirectory ("files/" ++ takeDirectory (fileName f))
                     liftIO $ writeFile path (fileContents f)
                     return $ FilePost True

@@ -23,6 +23,7 @@ import GHC.Generics
 
 type FileApi = Capture "filepath" String :> Get '[JSON] File
           :<|> ReqBody '[JSON] File :> Post '[JSON] FilePost
+          :<|> "write" :> ReqBody '[JSON] File :> Post '[JSON] FilePost
 
 fileApi :: Proxy FileApi
 fileApi = Proxy
@@ -46,14 +47,11 @@ instance FromJSON FilePost
 
 getFile' :: String -> ClientM File
 putFile' :: File -> ClientM FilePost
+update :: File -> ClientM FilePost
 
-getFile' :<|> putFile' = client fileApi
+getFile' :<|> putFile' :<|> update = client fileApi
 
 
-query :: Show a =>  ClientM a -> IO ()
 query f = do
     manager <- newManager defaultManagerSettings
-    result <- runClientM f (ClientEnv manager (BaseUrl Http "localhost" 8080 ""))
-    case result of
-        Left err -> putStrLn $ "Error: " ++ show err
-        Right res -> putStrLn $ show res ++"\n"
+    runClientM f (ClientEnv manager (BaseUrl Http "localhost" 8080 ""))

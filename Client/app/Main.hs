@@ -11,18 +11,21 @@ main = do
             command <- getLine
             case words command of
                 ["ls"] -> do
+                    putStrLn ""
                     listFiles
                     input
                 ["get", filePath] -> do
-                    putStrLn $ "getting " ++ filePath ++ "...\n"
                     getFile filePath
                     input
-                ["write", file] -> do
+                ["write", filePath] -> do
+                    write filePath
+                    input
+                ["new", file] -> do
                     newFile file
                     input
                 ["quit"] -> do
                     putStrLn "Bye!"
                     return ()
                 _ -> do
-                    putStrLn $ "Wrong!\n" ++ "usage: get <filePath>\n" ++ "write <filePath>"
+                    putStrLn $ "Wrong!\n" ++ "usage: get <filePath>\n" ++ "new <filePath>\n\n"
                     input
