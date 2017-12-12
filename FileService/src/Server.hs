@@ -67,9 +67,9 @@ putFile f = do
     if exists
         then throwError fileAlreadyExists
         else do
-            let dir = fileName f
-            dirExists <- liftIO $ doesDirectoryExist dir
-            if not dirExists && ((takeDirectory (dir)) /= ".")
+            let dir = takeDirectory $ fileName f
+            dirExists <- liftIO $ doesDirectoryExist ("files/" ++ dir)
+            if not dirExists && ( dir /= ".")
                 then do
                     liftIO $ print $ fileName f
                     liftIO $ print $ takeDirectory (fileName f)
