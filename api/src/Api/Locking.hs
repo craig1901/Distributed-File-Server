@@ -14,17 +14,26 @@
 {-# LANGUAGE TypeOperators              #-}
 {-# LANGUAGE TypeFamilies               #-}
 
-module Main where
+module Api.Locking where
 
-import  Control.Monad.IO.Class  (liftIO)
-import  Control.Monad.Logger    (runStderrLoggingT, runStdoutLoggingT, runNoLoggingT)
-import  Database.Persist
-import  Database.Persist.MySQL  (ConnectionPool, MySQLConnectInfo, createMySQLPool, mkMySQLConnectInfo)
-import  Database.Persist.Sql
-import  Database.Persist.TH
-import  Api.Directory as D
-import  Database
-import  Server
+import Data.Aeson
+import Data.Aeson.TH
+import Data.Proxy
+import Network.Wai
+import Network.Wai.Handler.Warp
+import Servant.API
+import Servant.Client
+import Database.Persist
+import Database.Persist.MySQL  (ConnectionPool, MySQLConnectInfo, createMySQLPool, mkMySQLConnectInfo)
+import Database.Persist.Sql
+import Database.Persist.TH
+import Network.HTTP.Client (newManager, defaultManagerSettings)
+import GHC.Generics
+import Api.File
 
-main :: IO ()
-main = runServer
+share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
+Locks json
+    filePath String
+    isLocked Bool
+    deriving Show
+|]

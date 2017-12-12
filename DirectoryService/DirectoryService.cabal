@@ -54,7 +54,7 @@ library
     , transformers
     , monad-logger
   exposed-modules:
-      Lib, Database
+      Server, Database
   default-language: Haskell2010
 
 executable DirectoryService

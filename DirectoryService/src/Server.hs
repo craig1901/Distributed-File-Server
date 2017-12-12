@@ -14,7 +14,7 @@
 {-# LANGUAGE TypeOperators              #-}
 {-# LANGUAGE TypeFamilies               #-}
 
-module Lib where
+module Server where
 
 import Prelude ()
 import Prelude.Compat
