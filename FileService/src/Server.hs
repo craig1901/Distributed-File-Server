@@ -12,7 +12,6 @@ module Server where
 
 import Prelude ()
 import Prelude.Compat
-
 import Control.Monad.Except
 import Control.Monad.Reader
 import Data.Aeson.Compat
@@ -68,8 +67,19 @@ putFile f = do
     if exists
         then throwError fileAlreadyExists
         else do
-            liftIO $ writeFile path (fileContents f)
-            return $ FilePost True
+            let dir = fileName f
+            dirExists <- liftIO $ doesDirectoryExist dir
+            if not dirExists && ((takeDirectory (dir)) /= ".")
+                then do
+                    liftIO $ print $ fileName f
+                    liftIO $ print $ takeDirectory (fileName f)
+                    liftIO $ createDirectory ("files/" ++ takeDirectory (fileName f))
+                    liftIO $ writeFile path (fileContents f)
+                    return $ FilePost True
+                else do
+                    liftIO $ writeFile path (fileContents f)
+                    return $ FilePost True
+
 
 
 

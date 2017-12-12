@@ -27,5 +27,4 @@ import  Database
 import  Lib
 
 main :: IO ()
-main = do
-    runServer
+main = runServer

@@ -31,14 +31,22 @@ import Network.HTTP.Client (newManager, defaultManagerSettings)
 import GHC.Generics
 import Api.File
 
-type DirectoryApi = ReqBody '[JSON] File :> Post '[JSON] ()
+share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
+Files json
+    name String
+    path String
+    deriving Show
+|]
+
+type DirectoryApi = "ls" :> Get '[JSON] [Files]
+               :<|> ReqBody '[JSON] File :> Post '[JSON] ()
 
 directoryApi :: Proxy DirectoryApi
 directoryApi = Proxy
 
+ls :: ClientM [Files]
 put' :: File -> ClientM ()
-put' = client directoryApi
-
+ls :<|> put' = client directoryApi
 
 query :: Show a => ClientM a -> IO ()
 query f = do

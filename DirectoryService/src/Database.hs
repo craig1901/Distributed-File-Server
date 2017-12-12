@@ -23,14 +23,9 @@ import  Database.Persist
 import  Database.Persist.MySQL  (withMySQLPool, ConnectionPool, MySQLConnectInfo, createMySQLPool, mkMySQLConnectInfo)
 import  Database.Persist.Sql
 import  Database.Persist.TH
-import Api.File
+import  Api.File
+import  Api.Directory
 
-share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
-Files
-    name String
-    path String
-    deriving Show
-|]
 
 conn :: MySQLConnectInfo
 conn = mkMySQLConnectInfo "localhost" "root" "root" "Files"

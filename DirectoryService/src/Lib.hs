@@ -49,6 +49,8 @@ import qualified Text.Blaze.Html
 import Api.Directory
 import Api.File
 import Database
+import System.Directory
+import System.FilePath
 
 runServer :: IO ()
 runServer = run 5000 app
@@ -60,7 +62,12 @@ api :: Proxy DirectoryApi
 api = Proxy
 
 server :: Server DirectoryApi
-server = put
+server = listFiles :<|> put
+
+listFiles :: Handler [Files]
+listFiles = do
+    files <- runDB $ selectList [] []
+    return $ map entityVal files
 
 put :: File -> Handler ()
 put f = do
@@ -69,5 +76,7 @@ put f = do
 
 insertFile :: File -> IO ()
 insertFile f = do
-    runDB (insert $ Files (fileName f) "/")
+    let name = takeFileName (fileName f)
+    let path = fileName f
+    runDB (insert $ Files name path)
     return ()
