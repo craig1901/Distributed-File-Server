@@ -29,13 +29,21 @@ import Database.Persist.Sql
 import Database.Persist.TH
 import Network.HTTP.Client (newManager, defaultManagerSettings)
 import GHC.Generics
+import Api.File
 
-share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
-Files
-    name String
-    path String
-    deriving Show
-|]
+type DirectoryApi = ReqBody '[JSON] File :> Post '[JSON] ()
+
+directoryApi :: Proxy DirectoryApi
+directoryApi = Proxy
+
+put' :: File -> ClientM ()
+put' = client directoryApi
 
 
-type DirectoryApi = Capture "ls" String :> Get '[JSON] [Files]
+query :: Show a => ClientM a -> IO ()
+query f = do
+    manager <- newManager defaultManagerSettings
+    result <- runClientM f (ClientEnv manager (BaseUrl Http "localhost" 5000 ""))
+    case result of
+        Left err -> putStrLn $ "Error: " ++ show err
+        Right res -> putStrLn $ show res ++"\n"

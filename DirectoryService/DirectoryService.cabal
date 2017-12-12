@@ -29,11 +29,35 @@ library
       src
   build-depends:
       base >= 4.7 && < 5
+    , base-compat
+    , mtl
+    , aeson-compat
+    , aeson
+    , attoparsec
+    , bytestring
+    , string-conversions
+    , time
+    , lucid
+    , http-media
+    , wai
+    , warp
+    , servant-server
+    , directory
+    , resourcet
+    , filepath
+    , blaze-markup
+    , blaze-html
+    , api
+    , persistent
+    , persistent-mysql-haskell
+    , persistent-template
+    , transformers
+    , monad-logger
   exposed-modules:
-      Lib
+      Lib, Database
   default-language: Haskell2010
 
-executable DirectoryService-exe
+executable DirectoryService
   main-is: Main.hs
   hs-source-dirs:
       app

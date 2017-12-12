@@ -22,7 +22,5 @@ main = do
                     return ()
 
                 _ -> do
-                    putStrLn $ "Wrong!\n"
-                    ++ "usage: get <filePath>\n"
-                    ++ "write <filePath>" 
+                    putStrLn $ "Wrong!\n" ++ "usage: get <filePath>\n" ++ "write <filePath>" 
                     input
