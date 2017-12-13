@@ -51,7 +51,7 @@ import Api.File
 import Database
 import System.Directory
 import System.FilePath
-import Data.Time.Clock
+import Data.Time
 
 
 runServer :: IO ()
@@ -86,7 +86,9 @@ insertFile f = do
 
 updateTime :: File -> Handler ()
 updateTime f = do
+    liftIO $ print "Changing the write time!"
     time <- liftIO $ getCurrentTime
-    let name = fileName f
-    runDB $ updateWhere [FilesName ==. name] [FilesLastWriteTime =. time]
+    let path = fileName f
+    let name = joinPath $ tail (splitPath path)
+    runDB $ updateWhere [FilesPath ==. name] [FilesLastWriteTime =. time]
     return ()

@@ -11,7 +11,7 @@ import Api.Directory as D
 import Api.Locking as L
 import Text.Editor
 import Data.ByteString.Char8 (pack)
-import Data.Time.Clock
+import Data.Time
 
 
 listFiles :: IO ()
@@ -51,6 +51,7 @@ writeIfAvailable check path = do
                     contents <- runUserEditorDWIM plainTemplate (pack $ fileContents file)
                     let updated = File (fileName file) (wrapStr contents)
                     F.query (update updated)
+                    D.query (update' updated)
                     L.query (unlock' path)
                     putStrLn "File updated!\n"
 
