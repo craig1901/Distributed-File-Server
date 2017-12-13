@@ -51,6 +51,8 @@ import Api.File
 import Database
 import System.Directory
 import System.FilePath
+import Data.Time.Clock
+
 
 runServer :: IO ()
 runServer = run 5000 app
@@ -62,7 +64,7 @@ api :: Proxy DirectoryApi
 api = Proxy
 
 server :: Server DirectoryApi
-server = listFiles :<|> put
+server = listFiles :<|> put :<|> updateTime
 
 listFiles :: Handler [Files]
 listFiles = do
@@ -78,5 +80,13 @@ insertFile :: File -> IO ()
 insertFile f = do
     let name = takeFileName (fileName f)
     let path = fileName f
-    runDB (insert $ Files name path)
+    time <- getCurrentTime
+    runDB (insert $ Files name path time)
+    return ()
+
+updateTime :: File -> Handler ()
+updateTime f = do
+    time <- liftIO $ getCurrentTime
+    let name = fileName f
+    runDB $ updateWhere [FilesName ==. name] [FilesLastWriteTime =. time]
     return ()

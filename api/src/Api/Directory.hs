@@ -30,23 +30,26 @@ import Database.Persist.TH
 import Network.HTTP.Client (newManager, defaultManagerSettings)
 import GHC.Generics
 import Api.File
+import Data.Time.Clock
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
 Files json
     name String
     path String
+    lastWriteTime UTCTime
     deriving Show
 |]
 
 type DirectoryApi = "ls" :> Get '[JSON] [Files]
                :<|> ReqBody '[JSON] File :> Post '[JSON] ()
+               :<|> "updateTime" :> ReqBody '[JSON] File :> Post '[JSON] ()
 
 directoryApi :: Proxy DirectoryApi
 directoryApi = Proxy
 
 ls :: ClientM [Files]
 put' :: File -> ClientM ()
-ls :<|> put' = client directoryApi
+ls :<|> put' :<|> update = client directoryApi
 
 query f = do
     manager <- newManager defaultManagerSettings

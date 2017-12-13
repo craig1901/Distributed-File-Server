@@ -27,6 +27,7 @@ library
                      , persistent
                      , persistent-mysql-haskell
                      , persistent-template
+                     , time
   default-language:    Haskell2010
 
 executable api-exe
