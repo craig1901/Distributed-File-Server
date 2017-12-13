@@ -42,6 +42,7 @@ Locks json
 type LockingApi = Capture "filePath" String :> Get '[JSON] LockCheck
              :<|> "lock" :> Capture "filePath" String :> Get '[JSON] ()
              :<|> "unlock" :> Capture "filePath" String :>  Get '[JSON] ()
+             :<|> ReqBody '[JSON] File :> Post '[JSON] ()
 
 lockingApi :: Proxy LockingApi
 lockingApi = Proxy
@@ -58,9 +59,10 @@ instance FromJSON LockCheck
 checkFile' :: String -> ClientM LockCheck
 lock' :: String -> ClientM ()
 unlock' :: String -> ClientM ()
+putFile :: File -> ClientM ()
 
-checkFile' :<|> lock' :<|> unlock' = client lockingApi
+checkFile' :<|> lock' :<|> unlock' :<|> putFile = client lockingApi
 
-query path = do
+query f = do
     manager <- newManager defaultManagerSettings
-    runClientM path (ClientEnv manager (BaseUrl Http "localhost" 8080 ""))
+    runClientM f (ClientEnv manager (BaseUrl Http "localhost" 8888 ""))

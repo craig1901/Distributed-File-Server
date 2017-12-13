@@ -42,7 +42,7 @@ import System.FilePath
 
 
 startApp :: IO ()
-startApp = run 5555 app
+startApp = run 8888 app
 
 app :: Application
 app = serve api server
@@ -51,7 +51,7 @@ api :: Proxy LockingApi
 api = Proxy
 
 server :: Server LockingApi
-server = check :<|> lock :<|> unlock
+server = check :<|> lock :<|> unlock :<|> put
 
 check :: String -> Handler LockCheck
 check path = do
@@ -64,10 +64,20 @@ check path = do
 
 lock :: String -> Handler ()
 lock path = do
+    liftIO $ putStrLn $ "Locking " ++ path
     runDB $ updateWhere [LocksFilePath ==. path] [LocksIsLocked =. True]
     return ()
 
 unlock :: String -> Handler ()
 unlock path = do
+    liftIO $ putStrLn $ "Unlocking " ++ path
     runDB $ updateWhere [LocksFilePath ==. path] [LocksIsLocked =. False]
+    return ()
+
+put :: File -> Handler ()
+put f = do
+    liftIO $ print "Putting into lock DB"
+    let path = fileName f
+    let locked = False
+    runDB (insert $ Locks path locked)
     return ()
