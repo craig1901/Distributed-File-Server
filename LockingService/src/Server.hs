@@ -71,7 +71,3 @@ unlock :: String -> Handler ()
 unlock path = do
     runDB $ updateWhere [LocksFilePath ==. path] [LocksIsLocked =. False]
     return ()
-
-
-
--- noFileExists = err404 {errBody = "File Doesn't exist on this path"}

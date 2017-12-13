@@ -31,11 +31,6 @@ conn :: MySQLConnectInfo
 conn = mkMySQLConnectInfo "localhost" "root" "root" "Files"
 
 
--- makePool :: IO ConnectionPool
--- makePool = do
---     c <- conn
---     runStdoutLoggingT (createMySQLPool c 1)
-
 runDB query = runStderrLoggingT $ withMySQLPool conn 10 $ \pool -> liftIO $ do
     flip runSqlPersistMPool pool $ do
         runMigration migrateAll
