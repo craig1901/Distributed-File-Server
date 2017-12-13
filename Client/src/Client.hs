@@ -12,10 +12,14 @@ import Api.Locking as L
 import Text.Editor
 import Data.ByteString.Char8 (pack)
 import Data.Time
+import Data.Cache as C
 
 
-listFiles :: IO ()
-listFiles = do
+
+listFiles :: Cache String (String, UTCTime) -> IO ()
+listFiles cache = do
+    time <- getCurrentTime
+    insert cache "Filename" ("fileContents", time)
     res <- D.query ls
     case res of
         Left err -> putStrLn $ "Error: " ++ show err ++ "\n\n"
@@ -25,8 +29,10 @@ listFiles = do
                 putStrLn $ "Path: " ++ (filesPath file) ++ "\n") res'
 
 
-getFile :: String -> IO ()
-getFile path = do
+getFile :: String -> Cache String (String, UTCTime) -> IO ()
+getFile path cache = do
+    k <- keys cache
+    putStrLn $ show k
     res <- F.query (getFile' path)
     case res of
         Left err -> putStrLn $ "Error: " ++ show err ++ "\n\n"
