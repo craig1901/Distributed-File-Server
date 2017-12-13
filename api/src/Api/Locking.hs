@@ -8,6 +8,7 @@
 {-# LANGUAGE TemplateHaskell            #-}
 {-# LANGUAGE DataKinds                  #-}
 {-# LANGUAGE RankNTypes                 #-}
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE TypeFamilies               #-}
 {-# LANGUAGE FlexibleInstances          #-}
 {-# LANGUAGE ScopedTypeVariables        #-}
@@ -37,3 +38,29 @@ Locks json
     isLocked Bool
     deriving Show
 |]
+
+type LockingApi = Capture "filePath" String :> Get '[JSON] LockCheck
+             :<|> "lock" :> Capture "filePath" String :> Get '[JSON] ()
+             :<|> "unlock" :> Capture "filePath" String :>  Get '[JSON] ()
+
+lockingApi :: Proxy LockingApi
+lockingApi = Proxy
+
+data LockCheck = LockCheck
+    {
+        locked :: Bool
+    }deriving(Show, Generic)
+
+instance ToJSON LockCheck
+instance FromJSON LockCheck
+
+
+checkFile' :: String -> ClientM LockCheck
+lock' :: String -> ClientM ()
+unlock' :: String -> ClientM ()
+
+checkFile' :<|> lock' :<|> unlock' = client lockingApi
+
+query path = do
+    manager <- newManager defaultManagerSettings
+    runClientM path (ClientEnv manager (BaseUrl Http "localhost" 8080 ""))

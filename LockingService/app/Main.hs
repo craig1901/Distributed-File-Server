@@ -22,8 +22,16 @@ import  Database.Persist
 import  Database.Persist.MySQL  (ConnectionPool, MySQLConnectInfo, createMySQLPool, mkMySQLConnectInfo)
 import  Database.Persist.Sql
 import  Database.Persist.TH
+import Data.Maybe
 import  Api.Locking as L
 import  Database
 
 main :: IO ()
-main = print "HI"
+main = do
+    -- res <- runDB $ updateWhere [LocksFilePath ==. "hi.txt"] [LocksIsLocked =. True]
+    -- let file = entityVal $ fromJust res
+    -- if not (locksIsLocked file) then print "True"
+    --     else print "False"
+    -- print $ show file
+    runDB $ updateWhere [LocksFilePath ==. "hi.txt"] [LocksIsLocked =. True]
+    return ()
