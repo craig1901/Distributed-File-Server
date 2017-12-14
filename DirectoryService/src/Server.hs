@@ -64,12 +64,19 @@ api :: Proxy DirectoryApi
 api = Proxy
 
 server :: Server DirectoryApi
-server = listFiles :<|> put :<|> updateTime
+server = listFiles :<|> checkTime :<|> put :<|> updateTime
 
 listFiles :: Handler [Files]
 listFiles = do
     files <- runDB $ selectList [] []
     return $ map entityVal files
+
+checkTime :: String -> UTCTime -> Handler Bool
+checkTime path time = do
+    res <- runDB $ selectFirst [FilesPath ==. path, FilesLastWriteTime <=. time] []
+    case res of
+        Nothing -> return False
+        Just f -> return True
 
 put :: File -> Handler ()
 put f = do

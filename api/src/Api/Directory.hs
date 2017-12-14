@@ -41,6 +41,7 @@ Files json
 |]
 
 type DirectoryApi = "ls" :> Get '[JSON] [Files]
+               :<|> Capture "path" String :> Capture "time" UTCTime :> Get '[JSON] Bool
                :<|> ReqBody '[JSON] File :> Post '[JSON] ()
                :<|> "updateTime" :> ReqBody '[JSON] File :> Post '[JSON] ()
 
@@ -48,8 +49,11 @@ directoryApi :: Proxy DirectoryApi
 directoryApi = Proxy
 
 ls :: ClientM [Files]
+check :: String -> UTCTime -> ClientM Bool
 put' :: File -> ClientM ()
-ls :<|> put' :<|> update' = client directoryApi
+update' :: File -> ClientM ()
+
+ls :<|> check :<|> put' :<|> update' = client directoryApi
 
 query f = do
     manager <- newManager defaultManagerSettings

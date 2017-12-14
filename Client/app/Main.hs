@@ -15,20 +15,20 @@ main = do
             case words command of
                 ["ls"] -> do
                     putStrLn ""
-                    listFiles cache
+                    listFiles
                     input cache
                 ["get", filePath] -> do
                     getFile filePath cache
                     input cache
                 ["write", filePath] -> do
-                    write filePath
+                    write filePath cache
                     input cache
                 ["new", file] -> do
-                    newFile file
+                    newFile file cache
                     input cache
                 ["quit"] -> do
                     putStrLn "Bye!"
                     return ()
                 _ -> do
-                    putStrLn $ "Wrong!\n" ++ "usage: get <filePath>\n" ++ "new <filePath>\n\n"
+                    putStrLn $ "Wrong!\n" ++ "usage:ls\nget <filePath>\nnew <filePath>\nwrite <filePath>\n\n"
                     input cache
