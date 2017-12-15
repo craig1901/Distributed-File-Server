@@ -73,11 +73,17 @@ cacheFile cache path file = do
 To test this file server, I created a simple client to be run in the command line to list, read, write and create new files. The caching facility is also done on the client side in memory. The client can use the following commands to use the file server:
 
 ```
-ls 					- To list all files in the directory
-get <filepath>		- Get the file contents on the given path
+ls 					          - To list all files in the directory
+get <filepath>		  - Get the file contents on the given path
 write <filepath>		- write to a file on the given path
-new <filepath>		- create a new file on the given path
-quit					- logout
+new <filepath>		  - create a new file on the given path
+quit					         - logout
 ```
 
 From here the client calls the multiple API’s to get the information they’re looking for and to perform certain actions such as locking on writes.
+
+## Running This Project
+Each subfolder in this project is a stack project, so you need to do the following :
+* 'git clone https://github.com/craig1901/Distributed-File-Server/'
+* 'stack build' on each stack project
+* 'bash run.sh' on each service before you run the client and the run the same command in that folder
