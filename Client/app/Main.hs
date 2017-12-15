@@ -30,5 +30,5 @@ main = do
                     putStrLn "Bye!"
                     return ()
                 _ -> do
-                    putStrLn $ "Wrong!\n" ++ "usage:ls\nget <filePath>\nnew <filePath>\nwrite <filePath>\n\n"
+                    putStrLn $ "Wrong!\n" ++ "usage:\nls\nget <filePath>\nnew <filePath>\nwrite <filePath>\nquit\n\n"
                     input cache

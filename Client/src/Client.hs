@@ -20,7 +20,7 @@ listFiles :: IO ()
 listFiles = do
     res <- D.query ls
     case res of
-        Left err -> putStrLn $ "Error: " ++ show err ++ "\n\n"
+        Left err -> putStrLn $ "Error: " ++ show err ++ "\n"
         Right res' -> do
             mapM_ (\file -> do
                 putStrLn $ "File: " ++ (filesName file) ++ ","
@@ -29,21 +29,18 @@ listFiles = do
 
 getFile :: String -> Cache String (String, UTCTime) -> IO ()
 getFile path cache = do
-    k <- keys cache
-    putStrLn $ show k
     file <- C.lookup cache path
     case file of
         Just (f, t) -> do
             bRes <- D.query (check path t)
             case bRes of
-                Right bool -> if bool == True then putStrLn $ "Loaded from cache:\n" ++ f
+                Right bool -> if bool == True then putStrLn f
                     else getFromServer path cache
                 Left err -> putStrLn $ "Error: " ++ show err ++ "\n"
         Nothing -> getFromServer path cache
 
 getFromServer :: String -> Cache String (String, UTCTime) -> IO ()
 getFromServer path cache = do
-    putStrLn "From Server\n"
     res <- F.query (getFile' path)
     case res of
         Left err -> putStrLn $ "Error: " ++ show err ++ "\n"
@@ -88,12 +85,9 @@ newFile path cache = do
     cacheFile cache path file
     case res of
         Left err -> putStrLn $ "Error: " ++ show err ++ "\n"
-        Right res' -> putStrLn $ show res' ++"\n"
+        Right res' -> putStrLn $ show "File added!" ++ "\n"
 
 cacheFile :: Cache String (String, UTCTime) -> String -> File -> IO ()
 cacheFile cache path file = do
     time <- getCurrentTime
-    print $ show time
-    print path
     insert cache path (fileContents file, time)
-    putStrLn "File inserted into cache!\n"
