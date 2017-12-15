@@ -84,6 +84,6 @@ From here the client calls the multiple API’s to get the information they’re
 
 ## Running This Project
 Each subfolder in this project is a stack project, so you need to do the following :
-* 'git clone https://github.com/craig1901/Distributed-File-Server/'
-* 'stack build' on each stack project
-* 'bash run.sh' on each service before you run the client and the run the same command in that folder
+* `git clone https://github.com/craig1901/Distributed-File-Server/`
+* `stack build` on each stack project
+* `bash run.sh` on each service before you run the client and the run the same command in that folder
