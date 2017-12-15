@@ -18,8 +18,9 @@ I will showcase read and writes in the section in directory service because they
 The directory service provides a lookup mechanism for the client where they can see which files are in which directory and also use this to read and write these files in their respective directories. To keep track of what’s where, I kept a MySQL database of file information with one table of the following information:
 
 Files
+
 | Name | Path | Last_Write_Time |
-| ------------- | --------- | --------- |
+| ---- | ---- | --------------- |
 | hello.txt | /hello.txt | 2017-12-15 17:38:26 |
 
 This information is used for listing all files in the server and also the last write time is used for caching which will be discussed later.
@@ -39,8 +40,9 @@ This information is used for listing all files in the server and also the last w
 The locking service is used to lock files while a user is writing to a file on a particular file location. This ensures that a file’s copy is the only copy that is being written to and therefore stops write conflicts with files. I implemented this by keeping track of lock details in a MySQL database again with one table keeping the following information:
 
 Locks
+
 | FilePath | isLocked |
-| ------------- | --------- | 
+| -------- | --------- | 
 | /hello.txt | 0 |
 
 I keep the file path of the file to be checked and map a haskell boolean value to a MySQL TINYINT to determine if the file is locked or not. If the file isn’t locked, the client can write what they want to a file and are declined access to the file they request if it has been locked by another client on the server. Once a client is finished writing to the file, they release the lock and others can now write to that previously locked file
